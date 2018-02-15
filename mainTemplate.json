@@ -168,6 +168,9 @@
             }
         ],
         "lbSettings": {
+            "lbPublicIPAddressName":"[concat(variables('namingInfix'), '-lbpip')]",
+            "publicIPAllocationMethod": "Dynamic",
+            "dnsHostName":"[concat(variables('namingInfix'), '-dns')]",
             "lbFrontEndIpConfigName": "LBFrontEnd",
             "backendAddressPoolName": "LBBackendPool",
             "loadBalancerName": "[concat(variables('namingInfix'), '-lb')]",
