@@ -10,13 +10,16 @@
         },
         "locationArray": {
             "type": "array"
+        },
+        "apis" :{
+            "type": "object"
         }
     },
     "variables": {
     },
     "resources": [
         {
-            "apiVersion": "2017-06-01",
+            "apiVersion": "[parameters('apis').apiVersionNetworkSecurityGroups]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "name": "[parameters('vnetSettings')[copyIndex()].nsgName]",
             "location": "[parameters('locationArray')[copyIndex()]]",
@@ -86,7 +89,7 @@
             }
         },
         {
-            "apiVersion": "2017-06-01",
+            "apiVersion": "[parameters('apis').apiVersionVirtualNetworks]",
             "type": "Microsoft.Network/virtualNetworks",
             "name": "[parameters('vnetSettings')[copyIndex()].vnetName]",
             "location": "[parameters('locationArray')[copyIndex()]]",
