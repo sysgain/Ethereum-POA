@@ -2,6 +2,14 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "namePrefix": {
+            "type": "string",
+            "defaultValue": "pa",
+            "metadata": {
+                "description": "String used as a base for naming resources (2 to 4 alphanumeric characters).  A unique hash is prepended to the string for some resources, while resource-specific information is appended."
+            },
+            "maxLength": 4
+        },
         "regionCount": {
             "type": "int",
             "defaultValue": 5,
@@ -93,7 +101,7 @@
         }
     },
     "variables": {
-        
+        "namingInfix":"[concat(parameters('namePrefix'),'rity')]",
         "apis": {
             "apiVersionDeployments": "2016-02-01",
             "apiVersionNetworkSecurityGroups": "2017-06-01",
@@ -124,35 +132,35 @@
         },
         "vnetSettings": [
             {
-                "vnetName":"[concat('vnet-',variables('suffixArray')[0])]",
+                "vnetName":"[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[0])]",
                 "addressPrefixes":"10.0.0.0/16",
                 "subnetName":"[concat('subnet-',variables('suffixArray')[0])]",
                 "subnetPrefix":"10.0.0.0/24",
                 "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[0])]"
             },
             {
-                "vnetName":"[concat('vnet-',variables('suffixArray')[1])]",
+                "vnetName":"[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[1])]",
                 "addressPrefixes":"10.1.0.0/16",
                 "subnetName":"[concat('subnet-',variables('suffixArray')[1])]",
                 "subnetPrefix":"10.1.0.0/24",
                 "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[1])]"
             },
             {
-                "vnetName":"[concat('vnet-',variables('suffixArray')[2])]",
+                "vnetName":"[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[2])]",
                 "addressPrefixes":"10.2.0.0/16",
                 "subnetName":"[concat('subnet-',variables('suffixArray')[2])]",
                 "subnetPrefix":"10.2.0.0/24",
                 "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[2])]"
             },
             {
-                "vnetName":"[concat('vnet-',variables('suffixArray')[3])]",
+                "vnetName":"[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[3])]",
                 "addressPrefixes":"10.3.0.0/16",
                 "subnetName":"[concat('subnet-',variables('suffixArray')[3])]",
                 "subnetPrefix":"10.3.0.0/24",
                 "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[3])]"
             },
             {
-                "vnetName":"[concat('vnet-',variables('suffixArray')[4])]",
+                "vnetName":"[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[4])]",
                 "addressPrefixes":"10.4.0.0/16",
                 "subnetName":"[concat('subnet-',variables('suffixArray')[4])]",
                 "subnetPrefix":"10.4.0.0/24",
@@ -160,7 +168,19 @@
             }
         ],
         "lbSettings": {
-            
+            "lbFrontEndIpConfigName": "LBFrontEnd",
+            "backendAddressPoolName": "LBBackendPool",
+            "loadBalancerName": "[concat(variables('namingInfix'), '-lb')]",
+            "FrontendPort1": "8545",
+            "BackendPort1": "8545",
+            "FrontendPort2": "8546",
+            "BackendPort2": "8546",
+            "FrontendPort3": "8180",
+            "BackendPort3": "8180",
+            "inboundNATRuleNamePrefix": "ssh-vm",
+            "inboundNATRuleFrontendStartingPort": "3000",
+            "inboundNATRuleFrontendEndingPort": "3020",
+            "inboundNATRuleBackendPort": "22"
         }          
 
     },
