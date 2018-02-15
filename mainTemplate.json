@@ -181,6 +181,9 @@
                     },
                     "locationArray": {
                         "value": "[variables('locationArray')]"
+                    },
+                    "apis" : {
+                        "value": "[variables('apis')]"
                     }
                 }
             }
