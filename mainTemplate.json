@@ -4,7 +4,7 @@
     "parameters": {
         "regionCount": {
             "type": "int",
-            "defaultValue": 1,
+            "defaultValue": 5,
             "allowedValues": [
                 1,
                 2,
@@ -158,7 +158,10 @@
                 "subnetPrefix":"10.4.0.0/24",
                 "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[4])]"
             }
-        ]          
+        ],
+        "lbSettings": {
+            
+        }          
 
     },
     "resources": [
@@ -176,11 +179,17 @@
                     "vnetSettings": {
                         "value": "[variables('vnetSettings')]"
                     },
+                    "lbSettings": {
+                        "value": "[variables('lbSettings')]"
+                    },
                     "regionCount": {
                         "value": "[parameters('regionCount')]"
                     },
                     "locationArray": {
                         "value": "[variables('locationArray')]"
+                    },
+                    "suffixArray": {
+                        "value": "[variables('suffixArray')]"
                     },
                     "apis" : {
                         "value": "[variables('apis')]"
