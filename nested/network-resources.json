@@ -1,0 +1,124 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vnetSettings" :{
+            "type": "object"
+        },
+        "regionCount": {
+            "type": "int"
+        },
+        "locationArray": {
+            "type": "array"
+        },
+        "suffixArray": {
+            "type": "array"
+        }
+    },
+    "variables": {
+        "frontEndNSGName": ""
+    },
+    "resources": [
+        {
+            "apiVersion": "2017-06-01",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[parameters('vnetSettings')[copyIndex()].nsgName]",
+            "location": "[parameters('locationArray')[copyIndex()]]",
+            "copy": {
+                "name": "loop",
+                "count": "[parameters('regionCount')]"
+            },
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "ssh-rule",
+                        "properties": {
+                            "description": "Allow SSH",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "Internet",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "jsonrpc-rule",
+                        "properties": {
+                            "description": "Allow JSON-RPC",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "8545",
+                            "sourceAddressPrefix": "Internet",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 101,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "ws-rule",
+                        "properties": {
+                            "description": "Allow WS-RPC",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "8546",
+                            "sourceAddressPrefix": "Internet",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 102,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "ui-rule",
+                        "properties": {
+                            "description": "Allow UI",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "8180",
+                            "sourceAddressPrefix": "Internet",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 103,
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "2017-06-01",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('vnetSettings')[copyIndex()].vnetName]",
+            "location": "[parameters('locationArray')[copyIndex()]]",
+            "copy": {
+                "name": "loop",
+                "count": "[parameters('regionCount')]"
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('vnetSettings')[copyIndex()].nsgName)]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('vnetSettings')[copyIndex()].addressPrefixes]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('vnetSettings')[copyIndex()].subnetName]",
+                        "properties": {
+                            "addressPrefix": "[parameters('vnetSettings')[copyIndex()].subnetPrefix]",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('vnetSettings')[copyIndex()].nsgName)]"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

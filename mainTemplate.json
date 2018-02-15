@@ -1,0 +1,189 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "regionCount": {
+            "type": "int",
+            "defaultValue": 1,
+            "allowedValues": [
+                1,
+                2,
+                3,
+                4,
+                5
+            ],
+            "metadata": {
+                "description": "Select the number of region(s) to deploy virtual machines into."
+            }
+        },
+        "location_1": {
+            "type": "string",
+            "defaultValue": "westus",
+            "metadata": {
+                "description": "Select the first region."
+            }
+        },
+        "location_2": {
+            "type": "string",
+            "defaultValue": "eastus",
+            "metadata": {
+                "description": "Select the second region."
+            }
+        },
+        "location_3": {
+            "type": "string",
+            "defaultValue": "centralus",
+            "metadata": {
+                "description": "Select the third region."
+            }
+        },
+        "location_4": {
+            "type": "string",
+            "defaultValue": "eastus2",
+            "metadata": {
+                "description": "Select the fourth region."
+            }
+        },
+        "location_5": {
+            "type": "string",
+            "defaultValue": "westus2",
+            "metadata": {
+                "description": "Select the fifth region."
+            }
+        },
+        "authType": {
+            "type": "string",
+            "defaultValue": "password",
+            "allowedValues": [
+                "password",
+                "sshPublicKey"
+            ],
+            "metadata": {
+                "description": "Authorization type for SSH access to VMs"
+            }
+        },
+        "adminUsername": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Administrator username of each deployed VM (alphanumeric characters only)"
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Administrator password for each deployed VM"
+            }
+        },
+        "adminSSHKey": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "SSH RSA public key file as a string"
+            }
+        },
+        "baseUrl": {
+            "type": "string",
+            "metadata": {
+                "description": "The base URL for dependent assets",
+                "artifactsBaseUrl": ""
+            },
+            "defaultValue": "https://raw.githubusercontent.com/sysgain/Ethereum-POA/code-v1" 
+        }
+    },
+    "variables": {
+        
+        "apis": {
+            "apiVersionDeployments": "2016-02-01",
+            "apiVersionNetworkSecurityGroups": "2017-06-01",
+            "apiVersionPublicIPAddresses": "2017-06-01",
+            "apiVersionLoadBalancers": "2017-06-01",
+            "apiVersionVirtualNetworks": "2017-06-01",
+            "apiVersionVirtualNetworkGateways": "2017-06-01",
+            "apiVersionVirtualMachineScaleSets": "2017-03-30",
+            "apiVersionConnections": "2017-06-01",
+            "apiVersionDocumentDb": "2015-04-08"
+        },
+        "locationArray": [
+            "[parameters('location_1')]",
+            "[parameters('location_2')]",
+            "[parameters('location_3')]",
+            "[parameters('location_4')]",
+            "[parameters('location_5')]"
+        ],
+        "suffixArray": [
+            "reg1",
+            "reg2",
+            "reg3",
+            "reg4",
+            "reg5"
+        ],
+        "linkedUrls": {
+            "networkResourcesUrl": "[concat(parameters('baseUrl'),'/nested/network-resources.json')]",
+        },
+        "vnetSettings": [
+            {
+                "vnetName":"[concat('vnet-',variables('suffixArray')[0])]",
+                "addressPrefixes":"10.0.0.0/16",
+                "subnetName":"[concat('subnet-',variables('suffixArray')[0])]",
+                "subnetPrefix":"10.0.0.0/24",
+                "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[0])]"
+            },
+            {
+                "vnetName":"[concat('vnet-',variables('suffixArray')[1])]",
+                "addressPrefixes":"10.1.0.0/16",
+                "subnetName":"[concat('subnet-',variables('suffixArray')[1])]",
+                "subnetPrefix":"10.1.0.0/24",
+                "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[1])]"
+            },
+            {
+                "vnetName":"[concat('vnet-',variables('suffixArray')[2])]",
+                "addressPrefixes":"10.2.0.0/16",
+                "subnetName":"[concat('subnet-',variables('suffixArray')[2])]",
+                "subnetPrefix":"10.2.0.0/24",
+                "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[2])]"
+            },
+            {
+                "vnetName":"[concat('vnet-',variables('suffixArray')[3])]",
+                "addressPrefixes":"10.3.0.0/16",
+                "subnetName":"[concat('subnet-',variables('suffixArray')[3])]",
+                "subnetPrefix":"10.3.0.0/24",
+                "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[3])]"
+            },
+            {
+                "vnetName":"[concat('vnet-',variables('suffixArray')[4])]",
+                "addressPrefixes":"10.4.0.0/16",
+                "subnetName":"[concat('subnet-',variables('suffixArray')[4])]",
+                "subnetPrefix":"10.4.0.0/24",
+                "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[4])]"
+            }
+        ]          
+
+    },
+    "resources": [
+        {
+            "apiVersion": "[variables('apis').apiVersionDeployments]",
+            "name": "network-resources-deploy",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('linkedUrls').networkResourcesUrl]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "vnetSettings": {
+                        "value": "[variables('vnetSettings')]"
+                    },
+                    "regionCount": {
+                        "value": "[parameters('regionCount')]"
+                    },
+                    "locationArray": {
+                        "value": "[variables('locationArray')]"
+                    }
+                }
+            }
+        }
+    ]
+}
