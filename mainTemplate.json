@@ -120,7 +120,7 @@
             "reg5"
         ],
         "linkedUrls": {
-            "networkResourcesUrl": "[concat(parameters('baseUrl'),'/nested/network-resources.json')]",
+            "networkResourcesUrl": "[concat(parameters('baseUrl'),'/nested/network-resources.json')]"
         },
         "vnetSettings": [
             {

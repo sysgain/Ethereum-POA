@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "vnetSettings" :{
-            "type": "object"
+            "type": "array"
         },
         "regionCount": {
             "type": "int"
