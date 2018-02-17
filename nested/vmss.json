@@ -2,12 +2,117 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        
+        "vmssSettings": {
+            "type": "secureObject"
+        },
+        "regionCount": {
+            "type": "int"
+        },
+        "locationArray": {
+            "type": "array"
+        },
+        "suffixArray": {
+            "type": "array"
+        },
+        "apis" :{
+            "type": "object"
+        }
     },
     "variables": {
-        
+        "authenticationType": "[parameters('vmssSettings').authenticationType]",
+        "sshPublicKey": "[parameters('vmssSettings').sshPublicKey]",
+        "adminUsername": "[parameters('vmssSettings').adminUsername]",
+        "adminPassword": "[parameters('vmssSettings').adminPassword]",
+        "vmssName": "[parameters('vmssSettings').vmssName]",
+        "osProfilepassword": {
+            "computerNamePrefix": "[variables('vmssName')]",
+            "adminUsername": "[variables('adminUsername')]",
+            "adminPassword": "[variables('adminPassword')]"
+        },
+        "sshKeyPath": "[concat('/home/',variables('adminUsername'),'/.ssh/authorized_keys')]",
+        "osProfilesshPublicKey": {
+            "computerNamePrefix": "[variables('vmssName')]",
+            "adminUsername": "[variables('adminUsername')]",
+            "adminPassword": "[variables('adminPassword')]",
+            "linuxConfiguration": {
+                "disablePasswordAuthentication": true,
+                "ssh": {
+                    "publicKeys": [
+                        {
+                            "path": "[variables('sshKeyPath')]",
+                            "keyData": "[variables('sshPublicKey')]"
+                        }
+                    ]
+                }
+            }
+        },
+        "osProfileReference": "[variables(concat('osProfile', variables('authenticationType')))]"
     },
     "resources": [
-        
+        {
+            "type": "Microsoft.Compute/virtualMachineScaleSets",
+            "name": "[concat(variables('vmssName'),'-',parameters('suffixArray')[copyIndex()])]",
+            "location": "[parameters('locationArray')[copyIndex()]]",
+            "apiVersion": "[variables('apis').apiVersionVirtualMachineScaleSets]",
+            "copy": {
+                "name": "loop",
+                "count": "[parameters('regionCount')]"
+            },
+            "sku": {
+                "name": "[variables('nodeVMSize')]",
+                "tier": "Standard",
+                "capacity": "[variables('capacity')]"
+            },
+            "properties": {
+                "singlePlacementGroup": true,
+                "overprovision": false,
+                "upgradePolicy": {
+                    "mode": "Manual"
+                },
+                "virtualMachineProfile": {
+                    "storageProfile": {
+                        "osDisk": {
+                            "createOption": "FromImage",
+                            "caching": "ReadWrite",
+                            "managedDisk": {
+                                "storageAccountType": "[variables('storageAccountType')]"
+                            }
+                        },
+                        "imageReference": "[parameters('ubuntuImage')]"
+                    },
+                    "osProfile": "[variables('osProfileReference')]",
+                    "networkProfile": {
+                        "networkInterfaceConfigurations": [
+                            {
+                                "name": "[variables('nicName')]",
+                                "properties": {
+                                    "primary": true,
+                                    "ipConfigurations": [
+                                        {
+                                            "name": "[variables('ipConfigName')]",
+                                            "properties": {
+                                                "subnet": {
+                                                    "id": "[concat(resourceId('Microsoft.Network/virtualNetworks',variables('vnetName')),'/subnets/',variables('txSubnetName'))]"
+                                                },
+                                                "loadBalancerBackendAddressPools": [
+                                                    {
+                                                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/backendAddressPools/',variables('lbBackendAddressPoolName'))]"
+                                                    }
+                                                ],
+                                                "loadBalancerInboundNatPools": [
+                                                    {
+                                                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/inboundNatPools/',variables('lbInboundNatRuleNamePrefix'))]"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
     ]
 }

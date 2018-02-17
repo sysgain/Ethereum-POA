@@ -24,6 +24,7 @@
     "variables": {
         "lbPublicIPAddressName": "[parameters('lbSettings').lbPublicIPAddressName]",
         "publicIPAllocationMethod": "[parameters('lbSettings').publicIPAllocationMethod]",
+        "gatewayPublicIPName": "[parameters('lbSettings').gatewayPublicIPName]",
         "dnsHostName": "[parameters('lbSettings').dnsHostName]",
         "loadBalancerName": "[parameters('lbSettings').loadBalancerName]",
         "lbFrontEndIpConfigName": "[parameters('lbSettings').lbFrontEndIpConfigName]",
@@ -135,12 +136,18 @@
                 },
                 "subnets": [
                     {
-                        "name": "[parameters('vnetSettings')[copyIndex()].subnetName]",
+                        "name": "[parameters('vnetSettings')[copyIndex()].subnet1Name]",
                         "properties": {
-                            "addressPrefix": "[parameters('vnetSettings')[copyIndex()].subnetPrefix]",
+                            "addressPrefix": "[parameters('vnetSettings')[copyIndex()].subnet1Prefix]",
                             "networkSecurityGroup": {
                                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('vnetSettings')[copyIndex()].nsgName)]"
                             }
+                        }
+                    },
+                    {
+                        "name": "[parameters('vnetSettings')[copyIndex()].subnet2Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('vnetSettings')[copyIndex()].subnet2Prefix]"
                         }
                     }
                 ]
@@ -289,6 +296,19 @@
                         }
                     }
                 ]
+            }
+        },
+        {
+            "apiVersion": "[parameters('apis').apiVersionPublicIPAddresses]",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[concat(variables('gatewayPublicIPName'),'-',parameters('suffixArray')[copyIndex()])]",
+            "location": "[parameters('locationArray')[copyIndex()]]",
+            "copy": {
+                "name": "loop",
+                "count": "[parameters('regionCount')]"
+            },
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic"
             }
         }
     ]

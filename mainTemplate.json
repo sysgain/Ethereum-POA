@@ -59,6 +59,14 @@
                 "description": "Select the fifth region."
             }
         },
+        "consortiumMemberId": {
+            "type": "string",
+            "minValue": 0,
+            "maxValue": 255,
+            "metadata": {
+                "description": "Unique consortium ID for every memnber"
+            }
+        },
         "authType": {
             "type": "string",
             "defaultValue": "password",
@@ -133,42 +141,54 @@
         "vnetSettings": [
             {
                 "vnetName":"[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[0])]",
-                "addressPrefixes":"10.0.0.0/16",
-                "subnetName":"[concat('subnet-',variables('suffixArray')[0])]",
-                "subnetPrefix":"10.0.0.0/24",
+                "addressPrefixes":"[replace('10._.16.0/20','_',string(parameters('consortiumMemberId')))]",
+                "subnet1Name":"[concat('subnet-',variables('suffixArray')[0])]",
+                "subnet1Prefix":"[replace('10._.17.0/24','_',string(parameters('consortiumMemberId')))]",
+                "subnet2Name":"[concat('gateway-subnet-',variables('suffixArray')[0])]",
+                "subnet2Prefix":"[replace('10._.18.0/24','_',string(parameters('consortiumMemberId')))]",
                 "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[0])]"
             },
             {
                 "vnetName":"[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[1])]",
-                "addressPrefixes":"10.1.0.0/16",
-                "subnetName":"[concat('subnet-',variables('suffixArray')[1])]",
-                "subnetPrefix":"10.1.0.0/24",
+                "addressPrefixes":"[replace('10._.19.0/20','_',string(parameters('consortiumMemberId')))]",
+                "subnet1Name":"[concat('subnet-',variables('suffixArray')[1])]",
+                "subnet1Prefix":"[replace('10._.20.0/24','_',string(parameters('consortiumMemberId')))]",
+                "subnet2Name":"[concat('gateway-subnet-',variables('suffixArray')[1])]",
+                "subnet2Prefix":"[replace('10._.21.0/24','_',string(parameters('consortiumMemberId')))]",
                 "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[1])]"
             },
             {
                 "vnetName":"[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[2])]",
-                "addressPrefixes":"10.2.0.0/16",
-                "subnetName":"[concat('subnet-',variables('suffixArray')[2])]",
-                "subnetPrefix":"10.2.0.0/24",
+                "addressPrefixes":"[replace('10._.22.0/20','_',string(parameters('consortiumMemberId')))]",
+                "subnet1Name":"[concat('subnet-',variables('suffixArray')[2])]",
+                "subnet1Prefix":"[replace('10._.23.0/24','_',string(parameters('consortiumMemberId')))]",
+                "subnet2Name":"[concat('gateway-subnet-',variables('suffixArray')[2])]",
+                "subnet2Prefix":"[replace('10._.24.0/24','_',string(parameters('consortiumMemberId')))]",
                 "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[2])]"
             },
             {
                 "vnetName":"[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[3])]",
-                "addressPrefixes":"10.3.0.0/16",
-                "subnetName":"[concat('subnet-',variables('suffixArray')[3])]",
-                "subnetPrefix":"10.3.0.0/24",
+                "addressPrefixes":"[replace('10._.25.0/20','_',string(parameters('consortiumMemberId')))]",
+                "subnet1Name":"[concat('subnet-',variables('suffixArray')[3])]",
+                "subnet1Prefix":"[replace('10._.26.0/24','_',string(parameters('consortiumMemberId')))]",
+                "subnet2Name":"[concat('gateway-subnet-',variables('suffixArray')[3])]",
+                "subnet2Prefix":"[replace('10._.27.0/24','_',string(parameters('consortiumMemberId')))]",
                 "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[3])]"
             },
             {
                 "vnetName":"[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[4])]",
-                "addressPrefixes":"10.4.0.0/16",
-                "subnetName":"[concat('subnet-',variables('suffixArray')[4])]",
-                "subnetPrefix":"10.4.0.0/24",
+                "addressPrefixes":"[replace('10._.28.0/20','_',string(parameters('consortiumMemberId')))]",
+                "subnet1Name":"[concat('subnet-',variables('suffixArray')[4])]",
+                "subnet1Prefix":"[replace('10._.29.0/24','_',string(parameters('consortiumMemberId')))]",
+                "subnet2Name":"[concat('gateway-subnet-',variables('suffixArray')[4])]",
+                "subnet2Prefix":"[replace('10._.30.0/24','_',string(parameters('consortiumMemberId')))]",
                 "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[4])]"
             }
+            
         ],
         "lbSettings": {
-            "lbPublicIPAddressName":"[concat(variables('namingInfix'), '-lbpip')]",
+            "lbPublicIPAddressName":"[concat(variables('namingInfix'), '-lb-pip')]",
+            "gatewayPublicIPName": "[concat(variables('namingInfix'), '-gwy-pip')]",
             "publicIPAllocationMethod": "Dynamic",
             "dnsHostName":"[concat(variables('namingInfix'), '-dns')]",
             "lbFrontEndIpConfigName": "LBFrontEnd",
