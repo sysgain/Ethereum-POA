@@ -5,6 +5,12 @@
         "vmssSettings": {
             "type": "secureObject"
         },
+        "lbSettings": {
+            "type": "secureObject"
+        },
+        "vnetSettings": {
+            "type": "secureObject"
+        },
         "regionCount": {
             "type": "int"
         },
@@ -14,7 +20,7 @@
         "suffixArray": {
             "type": "array"
         },
-        "apis" :{
+        "apis": {
             "type": "object"
         }
     },
@@ -24,6 +30,15 @@
         "adminUsername": "[parameters('vmssSettings').adminUsername]",
         "adminPassword": "[parameters('vmssSettings').adminPassword]",
         "vmssName": "[parameters('vmssSettings').vmssName]",
+        "nodeVMSize": "[parameters('vmssSettings').nodeVMSize]",
+        "capacity": "[parameters('vmssSettings').capacity]",
+        "storageAccountType": "[parameters('vmssSettings').storageAccountType]",
+        "ubuntuImage": "[parameters('vmssSettings').ubuntuImage]",
+        "nicName": "[parameters('vmssSettings').nicName]",
+        "ipConfigName": "[parameters('vmssSettings').ipConfigName]",
+        "loadBalancerName": "[parameters('lbSettings').loadBalancerName]",
+        "inboundNATRuleNamePrefix": "[parameters('lbSettings').inboundNATRuleNamePrefix]",
+        "backendAddressPoolName": "[parameters('lbSettings').backendAddressPoolName]",
         "osProfilepassword": {
             "computerNamePrefix": "[variables('vmssName')]",
             "adminUsername": "[variables('adminUsername')]",
@@ -53,7 +68,7 @@
             "type": "Microsoft.Compute/virtualMachineScaleSets",
             "name": "[concat(variables('vmssName'),'-',parameters('suffixArray')[copyIndex()])]",
             "location": "[parameters('locationArray')[copyIndex()]]",
-            "apiVersion": "[variables('apis').apiVersionVirtualMachineScaleSets]",
+            "apiVersion": "[parameters('apis').apiVersionVirtualMachineScaleSets]",
             "copy": {
                 "name": "loop",
                 "count": "[parameters('regionCount')]"
@@ -78,30 +93,30 @@
                                 "storageAccountType": "[variables('storageAccountType')]"
                             }
                         },
-                        "imageReference": "[parameters('ubuntuImage')]"
+                        "imageReference": "[variables('ubuntuImage')]"
                     },
                     "osProfile": "[variables('osProfileReference')]",
                     "networkProfile": {
                         "networkInterfaceConfigurations": [
                             {
-                                "name": "[variables('nicName')]",
+                                "name": "[concat(variables('nicName'),'-',parameters('suffixArray')[copyIndex()])]",
                                 "properties": {
                                     "primary": true,
                                     "ipConfigurations": [
                                         {
-                                            "name": "[variables('ipConfigName')]",
+                                            "name": "[concat(variables('ipConfigName'),'-',parameters('suffixArray')[copyIndex()])]",
                                             "properties": {
                                                 "subnet": {
-                                                    "id": "[concat(resourceId('Microsoft.Network/virtualNetworks',variables('vnetName')),'/subnets/',variables('txSubnetName'))]"
+                                                    "id": "[concat(resourceId('Microsoft.Network/virtualNetworks',parameters('vnetSettings')[copyIndex()].vnetName),'/subnets/',parameters('vnetSettings')[copyIndex()].subnet1Name)]"
                                                 },
                                                 "loadBalancerBackendAddressPools": [
                                                     {
-                                                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/backendAddressPools/',variables('lbBackendAddressPoolName'))]"
+                                                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', concat(variables('loadBalancerName'),'-',parameters('suffixArray')[copyIndex()])), '/backendAddressPools/',variables('backendAddressPoolName'))]"
                                                     }
                                                 ],
                                                 "loadBalancerInboundNatPools": [
                                                     {
-                                                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/inboundNatPools/',variables('lbInboundNatRuleNamePrefix'))]"
+                                                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', concat(variables('loadBalancerName'),'-',parameters('suffixArray')[copyIndex()])), '/inboundNatPools/',variables('inboundNATRuleNamePrefix'))]"
                                                     }
                                                 ]
                                             }

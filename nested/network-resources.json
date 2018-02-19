@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "vnetSettings" :{
+        "vnetSettings": {
             "type": "array"
         },
         "lbSettings": {
@@ -17,7 +17,7 @@
         "suffixArray": {
             "type": "array"
         },
-        "apis" :{
+        "apis": {
             "type": "object"
         }
     },
@@ -35,15 +35,10 @@
         "BackendPort2": "[parameters('lbSettings').BackendPort2]",
         "FrontendPort3": "[parameters('lbSettings').FrontendPort3]",
         "BackendPort3": "[parameters('lbSettings').BackendPort3]",
-        "inboundNATRuleNamePrefix":"[parameters('lbSettings').inboundNATRuleNamePrefix]",
+        "inboundNATRuleNamePrefix": "[parameters('lbSettings').inboundNATRuleNamePrefix]",
         "inboundNATRuleFrontendStartingPort": "[parameters('lbSettings').inboundNATRuleFrontendStartingPort]",
         "inboundNATRuleFrontendEndingPort": "[parameters('lbSettings').inboundNATRuleFrontendEndingPort]",
         "inboundNATRuleBackendPort": "[parameters('lbSettings').inboundNATRuleBackendPort]"
-
-
-
-
-
     },
     "resources": [
         {
