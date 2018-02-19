@@ -11,6 +11,9 @@
         "vnetSettings": {
             "type": "object"
         },
+        "capacity": {
+            "type": "string"
+        },
         "location": {
             "type": "string"
         },
@@ -28,7 +31,7 @@
         "adminPassword": "[parameters('vmssSettings').adminPassword]",
         "vmssName": "[parameters('vmssSettings').vmssName]",
         "nodeVMSize": "[parameters('vmssSettings').nodeVMSize]",
-        "capacityArray": "[parameters('vmssSettings').capacityArray]",
+        
         "storageAccountType": "[parameters('vmssSettings').storageAccountType]",
         "ubuntuImage": "[parameters('vmssSettings').ubuntuImage]",
         "nicName": "[parameters('vmssSettings').nicName]",
@@ -64,12 +67,12 @@
         {
             "type": "Microsoft.Compute/virtualMachineScaleSets",
             "name": "[concat(variables('vmssName'),'-',parameters('suffix'))]",
-            "location": "[parameters('location')[copyIndex()]]",
+            "location": "[parameters('location')]",
             "apiVersion": "[parameters('apis').apiVersionVirtualMachineScaleSets]",
             "sku": {
                 "name": "[variables('nodeVMSize')]",
                 "tier": "Standard",
-                "capacity": "[variables('capacityArray')[copyIndex()]]"
+                "capacity": "[parameters('capacity')]"
             },
             "properties": {
                 "singlePlacementGroup": true,

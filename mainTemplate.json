@@ -344,6 +344,13 @@
             "inboundNATRuleFrontendEndingPort": "3020",
             "inboundNATRuleBackendPort": "22"
         },
+        "capacityArray": [
+            "[parameters('nodeCountRegion1')]",
+            "[parameters('nodeCountRegion2')]",
+            "[parameters('nodeCountRegion3')]",
+            "[parameters('nodeCountRegion4')]",
+            "[parameters('nodeCountRegion5')]"
+        ],
         "vmssSettings": {
             "authenticationType": "[parameters('authType')]",
             "sshPublicKey": "[parameters('adminSSHKey')]",
@@ -351,13 +358,7 @@
             "adminPassword": "[parameters('adminPassword')]",
             "vmssName": "[concat(variables('namingInfix'), '-vmss')]",
             "nodeVMSize": "[parameters('validatorNodeVMSize')]",
-            "capacityArray": [
-                "[parameters('nodeCountRegion1')]",
-                "[parameters('nodeCountRegion2')]",
-                "[parameters('nodeCountRegion3')]",
-                "[parameters('nodeCountRegion4')]",
-                "[parameters('nodeCountRegion5')]"
-            ],
+            
             "storageAccountType": "[parameters('storageAccountType')]",
             "ubuntuImage": {
                 "publisher": "Canonical",
@@ -428,6 +429,9 @@
                     },
                     "vnetSettings": {
                         "value": "[variables('vnetSettings')[copyIndex()]]"
+                    },
+                    "capacity": {
+                        "value": "[variables('capacityArray')[copyIndex()]]"
                     },
                     "location": {
                         "value": "[variables('locationArray')[copyIndex()]]"
