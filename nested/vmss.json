@@ -31,7 +31,7 @@
         "adminPassword": "[parameters('vmssSettings').adminPassword]",
         "vmssName": "[parameters('vmssSettings').vmssName]",
         "nodeVMSize": "[parameters('vmssSettings').nodeVMSize]",
-        "capacity": "[parameters('vmssSettings').capacity]",
+        "capacityArray": "[parameters('vmssSettings').capacityArray]",
         "storageAccountType": "[parameters('vmssSettings').storageAccountType]",
         "ubuntuImage": "[parameters('vmssSettings').ubuntuImage]",
         "nicName": "[parameters('vmssSettings').nicName]",
@@ -76,7 +76,7 @@
             "sku": {
                 "name": "[variables('nodeVMSize')]",
                 "tier": "Standard",
-                "capacity": "[variables('capacity')]"
+                "capacity": "[variables('capacityArray')[copyIndex()]]"
             },
             "properties": {
                 "singlePlacementGroup": true,

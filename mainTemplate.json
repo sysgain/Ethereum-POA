@@ -99,17 +99,155 @@
                 "description": "SSH RSA public key file as a string"
             }
         },
+        "validatorNodeVMSize":{
+            "type": "string",
+            "defaultValue": "Standard_A1",
+            "metadata": {
+                "description": "Size of the virtual machine for transaction nodes"
+            }
+        },
+        "storageAccountType": {
+            "type": "string",
+            "defaultValue": "",
+            "allowedValues": [
+                "Standard_LRS",
+                "Premium_LRS"
+            ],
+            "metadata": {
+                "description": "Type of managed disks to create"
+            }
+        },
+        "connectionSharedKey": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Shared Key for the Gateway Connection"
+            }
+        },
+        "consortiumMemberGatewayId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The ResourceId of the Consortium Member VNet Gateawy to which to connect to"
+            }
+        },
+        "nodeCountRegion1": {
+            "type": "int",
+            "defaultValue": 1,
+            "metadata": {
+                "description": "Number of load balanced transaction nodes"
+            },
+            "allowedValues": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ],
+            "minValue": 1,
+            "maxValue": 10
+        },
+        "nodeCountRegion2": {
+            "type": "int",
+            "defaultValue": 1,
+            "metadata": {
+                "description": "Number of load balanced transaction nodes"
+            },
+            "allowedValues": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ],
+            "minValue": 1,
+            "maxValue": 10
+        },
+        "nodeCountRegion3": {
+            "type": "int",
+            "defaultValue": 1,
+            "metadata": {
+                "description": "Number of load balanced transaction nodes"
+            },
+            "allowedValues": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ],
+            "minValue": 1,
+            "maxValue": 10
+        },
+        "nodeCountRegion4": {
+            "type": "int",
+            "defaultValue": 1,
+            "metadata": {
+                "description": "Number of load balanced transaction nodes"
+            },
+            "allowedValues": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ],
+            "minValue": 1,
+            "maxValue": 10
+        },
+        "nodeCountRegion5": {
+            "type": "int",
+            "defaultValue": 1,
+            "metadata": {
+                "description": "Number of load balanced transaction nodes"
+            },
+            "allowedValues": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ],
+            "minValue": 1,
+            "maxValue": 10
+        },
+
         "baseUrl": {
             "type": "string",
             "metadata": {
                 "description": "The base URL for dependent assets",
                 "artifactsBaseUrl": ""
             },
-            "defaultValue": "https://raw.githubusercontent.com/sysgain/Ethereum-POA/code-v1" 
+            "defaultValue": "https://raw.githubusercontent.com/sysgain/Ethereum-POA/code-v1"
         }
     },
     "variables": {
-        "namingInfix":"[concat(parameters('namePrefix'),'rity')]",
+        "namingInfix": "[concat(parameters('namePrefix'),'rity')]",
         "apis": {
             "apiVersionDeployments": "2016-02-01",
             "apiVersionNetworkSecurityGroups": "2017-06-01",
@@ -136,61 +274,61 @@
             "reg5"
         ],
         "linkedUrls": {
-            "networkResourcesUrl": "[concat(parameters('baseUrl'),'/nested/network-resources.json')]"
+            "networkResourcesUrl": "[concat(parameters('baseUrl'),'/nested/network-resources.json')]",
+            "vmssResourcesUrl": "[concat(parameters('baseUrl'),'/nested/vmss.json')]"
         },
         "vnetSettings": [
             {
-                "vnetName":"[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[0])]",
-                "addressPrefixes":"[replace('10._.16.0/20','_',string(parameters('consortiumMemberId')))]",
-                "subnet1Name":"[concat('subnet-',variables('suffixArray')[0])]",
-                "subnet1Prefix":"[replace('10._.17.0/24','_',string(parameters('consortiumMemberId')))]",
-                "subnet2Name":"[concat('gateway-subnet-',variables('suffixArray')[0])]",
-                "subnet2Prefix":"[replace('10._.18.0/24','_',string(parameters('consortiumMemberId')))]",
+                "vnetName": "[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[0])]",
+                "addressPrefixes": "[replace('10._.16.0/20','_',string(parameters('consortiumMemberId')))]",
+                "subnet1Name": "[concat('subnet-',variables('suffixArray')[0])]",
+                "subnet1Prefix": "[replace('10._.17.0/24','_',string(parameters('consortiumMemberId')))]",
+                "subnet2Name": "[concat('gateway-subnet-',variables('suffixArray')[0])]",
+                "subnet2Prefix": "[replace('10._.18.0/24','_',string(parameters('consortiumMemberId')))]",
                 "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[0])]"
             },
             {
-                "vnetName":"[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[1])]",
-                "addressPrefixes":"[replace('10._.19.0/20','_',string(parameters('consortiumMemberId')))]",
-                "subnet1Name":"[concat('subnet-',variables('suffixArray')[1])]",
-                "subnet1Prefix":"[replace('10._.20.0/24','_',string(parameters('consortiumMemberId')))]",
-                "subnet2Name":"[concat('gateway-subnet-',variables('suffixArray')[1])]",
-                "subnet2Prefix":"[replace('10._.21.0/24','_',string(parameters('consortiumMemberId')))]",
+                "vnetName": "[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[1])]",
+                "addressPrefixes": "[replace('10._.19.0/20','_',string(parameters('consortiumMemberId')))]",
+                "subnet1Name": "[concat('subnet-',variables('suffixArray')[1])]",
+                "subnet1Prefix": "[replace('10._.20.0/24','_',string(parameters('consortiumMemberId')))]",
+                "subnet2Name": "[concat('gateway-subnet-',variables('suffixArray')[1])]",
+                "subnet2Prefix": "[replace('10._.21.0/24','_',string(parameters('consortiumMemberId')))]",
                 "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[1])]"
             },
             {
-                "vnetName":"[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[2])]",
-                "addressPrefixes":"[replace('10._.22.0/20','_',string(parameters('consortiumMemberId')))]",
-                "subnet1Name":"[concat('subnet-',variables('suffixArray')[2])]",
-                "subnet1Prefix":"[replace('10._.23.0/24','_',string(parameters('consortiumMemberId')))]",
-                "subnet2Name":"[concat('gateway-subnet-',variables('suffixArray')[2])]",
-                "subnet2Prefix":"[replace('10._.24.0/24','_',string(parameters('consortiumMemberId')))]",
+                "vnetName": "[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[2])]",
+                "addressPrefixes": "[replace('10._.22.0/20','_',string(parameters('consortiumMemberId')))]",
+                "subnet1Name": "[concat('subnet-',variables('suffixArray')[2])]",
+                "subnet1Prefix": "[replace('10._.23.0/24','_',string(parameters('consortiumMemberId')))]",
+                "subnet2Name": "[concat('gateway-subnet-',variables('suffixArray')[2])]",
+                "subnet2Prefix": "[replace('10._.24.0/24','_',string(parameters('consortiumMemberId')))]",
                 "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[2])]"
             },
             {
-                "vnetName":"[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[3])]",
-                "addressPrefixes":"[replace('10._.25.0/20','_',string(parameters('consortiumMemberId')))]",
-                "subnet1Name":"[concat('subnet-',variables('suffixArray')[3])]",
-                "subnet1Prefix":"[replace('10._.26.0/24','_',string(parameters('consortiumMemberId')))]",
-                "subnet2Name":"[concat('gateway-subnet-',variables('suffixArray')[3])]",
-                "subnet2Prefix":"[replace('10._.27.0/24','_',string(parameters('consortiumMemberId')))]",
+                "vnetName": "[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[3])]",
+                "addressPrefixes": "[replace('10._.25.0/20','_',string(parameters('consortiumMemberId')))]",
+                "subnet1Name": "[concat('subnet-',variables('suffixArray')[3])]",
+                "subnet1Prefix": "[replace('10._.26.0/24','_',string(parameters('consortiumMemberId')))]",
+                "subnet2Name": "[concat('gateway-subnet-',variables('suffixArray')[3])]",
+                "subnet2Prefix": "[replace('10._.27.0/24','_',string(parameters('consortiumMemberId')))]",
                 "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[3])]"
             },
             {
-                "vnetName":"[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[4])]",
-                "addressPrefixes":"[replace('10._.28.0/20','_',string(parameters('consortiumMemberId')))]",
-                "subnet1Name":"[concat('subnet-',variables('suffixArray')[4])]",
-                "subnet1Prefix":"[replace('10._.29.0/24','_',string(parameters('consortiumMemberId')))]",
-                "subnet2Name":"[concat('gateway-subnet-',variables('suffixArray')[4])]",
-                "subnet2Prefix":"[replace('10._.30.0/24','_',string(parameters('consortiumMemberId')))]",
+                "vnetName": "[concat(variables('namingInfix'),'-vnet-',variables('suffixArray')[4])]",
+                "addressPrefixes": "[replace('10._.28.0/20','_',string(parameters('consortiumMemberId')))]",
+                "subnet1Name": "[concat('subnet-',variables('suffixArray')[4])]",
+                "subnet1Prefix": "[replace('10._.29.0/24','_',string(parameters('consortiumMemberId')))]",
+                "subnet2Name": "[concat('gateway-subnet-',variables('suffixArray')[4])]",
+                "subnet2Prefix": "[replace('10._.30.0/24','_',string(parameters('consortiumMemberId')))]",
                 "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[4])]"
             }
-            
         ],
         "lbSettings": {
-            "lbPublicIPAddressName":"[concat(variables('namingInfix'), '-lb-pip')]",
+            "lbPublicIPAddressName": "[concat(variables('namingInfix'), '-lb-pip')]",
             "gatewayPublicIPName": "[concat(variables('namingInfix'), '-gwy-pip')]",
             "publicIPAllocationMethod": "Dynamic",
-            "dnsHostName":"[concat(variables('namingInfix'), '-dns')]",
+            "dnsHostName": "[concat(variables('namingInfix'), '-dns')]",
             "lbFrontEndIpConfigName": "LBFrontEnd",
             "backendAddressPoolName": "LBBackendPool",
             "loadBalancerName": "[concat(variables('namingInfix'), '-lb')]",
@@ -204,8 +342,32 @@
             "inboundNATRuleFrontendStartingPort": "3000",
             "inboundNATRuleFrontendEndingPort": "3020",
             "inboundNATRuleBackendPort": "22"
-        }          
-
+        },
+        
+        "vmssSettings": {
+            "authenticationType": "[parameters('authType')]",
+            "sshPublicKey": "[parameters('adminSSHKey')]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]",
+            "vmssName": "[concat(variables('namingInfix'), '-vmss')]",
+            "nodeVMSize": "[parameters('validatorNodeVMSize')]",
+            "capacityArray": [
+                "[parameters('nodeCountRegion1')]",
+                "[parameters('nodeCountRegion2')]",
+                "[parameters('nodeCountRegion3')]",
+                "[parameters('nodeCountRegion4')]",
+                "[parameters('nodeCountRegion5')]"
+            ],
+            "storageAccountType": "[parameters('storageAccountType')]",
+            "ubuntuImage": {
+                "publisher": "Canonical",
+                "offer": "UbuntuServer",
+                "sku": "16.04.0-LTS",
+                "version": "latest"
+            },
+            "nicName": "[concat(variables('namingInfix'), '-nic')]",
+            "ipConfigName": "ipConfig"
+        }
     },
     "resources": [
         {
@@ -234,7 +396,42 @@
                     "suffixArray": {
                         "value": "[variables('suffixArray')]"
                     },
-                    "apis" : {
+                    "apis": {
+                        "value": "[variables('apis')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "[variables('apis').apiVersionDeployments]",
+            "name": "vmss-resources-deploy",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('linkedUrls').vmssResourcesUrl]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "vmssSettings": {
+                        "value": "[variables('vmssSettings')]"
+                    },
+                    "lbSettings": {
+                        "value": "[variables('lbSettings')]"
+                    },
+                    "vnetSettings": {
+                        "value": "[variables('vnetSettings')]"
+                    },
+                    "regionCount": {
+                        "value": "[parameters('regionCount')]"
+                    },
+                    "locationArray": {
+                        "value": "[variables('locationArray')]"
+                    },
+                    "suffixArray": {
+                        "value": "[variables('suffixArray')]"
+                    },
+                    "apis": {
                         "value": "[variables('apis')]"
                     }
                 }
