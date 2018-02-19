@@ -60,7 +60,7 @@
             }
         },
         "consortiumMemberId": {
-            "type": "string",
+            "type": "int",
             "minValue": 0,
             "maxValue": 255,
             "metadata": {

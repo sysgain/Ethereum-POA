@@ -9,7 +9,7 @@
             "type": "secureObject"
         },
         "vnetSettings": {
-            "type": "secureObject"
+            "type": "array"
         },
         "regionCount": {
             "type": "int"
