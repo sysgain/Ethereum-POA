@@ -325,11 +325,12 @@
                 "nsgName": "[concat('Front-End-NSG-',variables('suffixArray')[4])]"
             }
         ],
+        "uniq": "[substring(uniqueString(resourceGroup().id),0 ,5)]",
         "lbSettings": {
             "lbPublicIPAddressName": "[concat(variables('namingInfix'), '-lb-pip')]",
             "gatewayPublicIPName": "[concat(variables('namingInfix'), '-gwy-pip')]",
             "publicIPAllocationMethod": "Dynamic",
-            "dnsHostName": "[concat(variables('namingInfix'), '-dns')]",
+            "dnsHostName": "[concat(variables('namingInfix'), '-dns-',variables('uniq'))]",
             "lbFrontEndIpConfigName": "LBFrontEnd",
             "backendAddressPoolName": "LBBackendPool",
             "loadBalancerName": "[concat(variables('namingInfix'), '-lb')]",
