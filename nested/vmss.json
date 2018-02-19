@@ -12,7 +12,7 @@
             "type": "object"
         },
         "capacity": {
-            "type": "string"
+            "type": "int"
         },
         "location": {
             "type": "string"
