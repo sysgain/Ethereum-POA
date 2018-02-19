@@ -11,14 +11,11 @@
         "vnetSettings": {
             "type": "array"
         },
-        "regionCount": {
-            "type": "int"
+        "location": {
+            "type": "string"
         },
-        "locationArray": {
-            "type": "array"
-        },
-        "suffixArray": {
-            "type": "array"
+        "suffix": {
+            "type": "string"
         },
         "apis": {
             "type": "object"
@@ -40,13 +37,13 @@
         "inboundNATRuleNamePrefix": "[parameters('lbSettings').inboundNATRuleNamePrefix]",
         "backendAddressPoolName": "[parameters('lbSettings').backendAddressPoolName]",
         "osProfilepassword": {
-            "computerNamePrefix": "[variables('vmssName')]",
+            "computerNamePrefix": "[concat(variables('vmssName'),'-',parameters('suffix'))]",
             "adminUsername": "[variables('adminUsername')]",
             "adminPassword": "[variables('adminPassword')]"
         },
         "sshKeyPath": "[concat('/home/',variables('adminUsername'),'/.ssh/authorized_keys')]",
         "osProfilesshPublicKey": {
-            "computerNamePrefix": "[variables('vmssName')]",
+            "computerNamePrefix": "[concat(variables('vmssName'),'-',parameters('suffix'))]",
             "adminUsername": "[variables('adminUsername')]",
             "adminPassword": "[variables('adminPassword')]",
             "linuxConfiguration": {
@@ -66,13 +63,9 @@
     "resources": [
         {
             "type": "Microsoft.Compute/virtualMachineScaleSets",
-            "name": "[concat(variables('vmssName'),'-',parameters('suffixArray')[copyIndex()])]",
-            "location": "[parameters('locationArray')[copyIndex()]]",
+            "name": "[concat(variables('vmssName'),'-',parameters('suffix'))]",
+            "location": "[parameters('location')[copyIndex()]]",
             "apiVersion": "[parameters('apis').apiVersionVirtualMachineScaleSets]",
-            "copy": {
-                "name": "loop",
-                "count": "[parameters('regionCount')]"
-            },
             "sku": {
                 "name": "[variables('nodeVMSize')]",
                 "tier": "Standard",
@@ -99,24 +92,24 @@
                     "networkProfile": {
                         "networkInterfaceConfigurations": [
                             {
-                                "name": "[concat(variables('nicName'),'-',parameters('suffixArray')[copyIndex()])]",
+                                "name": "[concat(variables('nicName'),'-',parameters('suffix'))]",
                                 "properties": {
                                     "primary": true,
                                     "ipConfigurations": [
                                         {
-                                            "name": "[concat(variables('ipConfigName'),'-',parameters('suffixArray')[copyIndex()])]",
+                                            "name": "[concat(variables('ipConfigName'),'-',parameters('suffix'))]",
                                             "properties": {
                                                 "subnet": {
-                                                    "id": "[concat(resourceId('Microsoft.Network/virtualNetworks',parameters('vnetSettings')[copyIndex()].vnetName),'/subnets/',parameters('vnetSettings')[copyIndex()].subnet1Name)]"
+                                                    "id": "[concat(resourceId('Microsoft.Network/virtualNetworks',parameters('vnetSettings').vnetName),'/subnets/',parameters('vnetSettings').subnet1Name)]"
                                                 },
                                                 "loadBalancerBackendAddressPools": [
                                                     {
-                                                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', concat(variables('loadBalancerName'),'-',parameters('suffixArray')[copyIndex()])), '/backendAddressPools/',variables('backendAddressPoolName'))]"
+                                                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', concat(variables('loadBalancerName'),'-',parameters('suffix'))), '/backendAddressPools/',variables('backendAddressPoolName'))]"
                                                     }
                                                 ],
                                                 "loadBalancerInboundNatPools": [
                                                     {
-                                                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', concat(variables('loadBalancerName'),'-',parameters('suffixArray')[copyIndex()])), '/inboundNatPools/',variables('inboundNATRuleNamePrefix'))]"
+                                                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', concat(variables('loadBalancerName'),'-',parameters('suffix'))), '/inboundNatPools/',variables('inboundNATRuleNamePrefix'))]"
                                                     }
                                                 ]
                                             }
@@ -125,9 +118,33 @@
                                 }
                             }
                         ]
+                    },
+                    "extensionProfile": {
+                        "extensions": [
+                            {
+                                "name": "[concat('MSILinuxExt-',parameters('suffix'))]",
+                                "properties": {
+                                    "publisher": "Microsoft.ManagedIdentity",
+                                    "type": "ManagedIdentityExtensionForLinux",
+                                    "typeHandlerVersion": "1.0",
+                                    "autoUpgradeMinorVersion": true,
+                                    "settings": {
+                                        "port": 50342
+                                    },
+                                    "protectedSettings": {}
+                                }
+                            }
+                        ]
                     }
                 }
             }
         }
-    ]
+    ],
+    "outputs": {
+        "principalId": {
+          "type": "string",
+          "value": "[reference(concat(resourceId('Microsoft.Compute/virtualMachineScaleSets/', concat(variables('vmssName'),'-',parameters('suffix'))),'/providers/Microsoft.ManagedIdentity/Identities/default'), parameters('apis').apiVersionVirtualMachineScaleSets).principalId]"
+        }
+    }
+
 }
