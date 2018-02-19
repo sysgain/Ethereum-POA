@@ -80,14 +80,14 @@
         },
         "adminUsername": {
             "type": "string",
-            "defaultValue": "",
+            "defaultValue": "ashuser",
             "metadata": {
                 "description": "Administrator username of each deployed VM (alphanumeric characters only)"
             }
         },
         "adminPassword": {
             "type": "securestring",
-            "defaultValue": "",
+            "defaultValue": "Ashpassword123",
             "metadata": {
                 "description": "Administrator password for each deployed VM"
             }
@@ -108,7 +108,7 @@
         },
         "storageAccountType": {
             "type": "string",
-            "defaultValue": "",
+            "defaultValue": "Standard_LRS",
             "allowedValues": [
                 "Standard_LRS",
                 "Premium_LRS"
@@ -405,7 +405,7 @@
         },
         {
             "apiVersion": "[variables('apis').apiVersionDeployments]",
-            "name": "[concat('vmss-dep-',variables('suffixArray')[copyIndex()])]",
+            "name": "[concat('vmss-deploy-',variables('suffixArray')[copyIndex()])]",
             "type": "Microsoft.Resources/deployments",
             "copy": {
                 "name": "loop",
