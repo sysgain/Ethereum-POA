@@ -74,6 +74,9 @@
                 "tier": "Standard",
                 "capacity": "[parameters('capacity')]"
             },
+            "identity": { 
+                "type": "systemAssigned"
+            },
             "properties": {
                 "singlePlacementGroup": true,
                 "overprovision": false,
