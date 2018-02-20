@@ -247,7 +247,7 @@
     },
     "variables": {
         "namingInfix": "[concat(parameters('namePrefix'),'rity')]",
-        "keyVaultName": "[concat(variables('namingInfix'),'-kvlt')]",
+        
         "apis": {
             "apiVersionDeployments": "2016-02-01",
             "apiVersionNetworkSecurityGroups": "2017-06-01",
@@ -359,7 +359,6 @@
             "adminPassword": "[parameters('adminPassword')]",
             "vmssName": "[concat(variables('namingInfix'), '-vmss')]",
             "nodeVMSize": "[parameters('validatorNodeVMSize')]",
-            
             "storageAccountType": "[parameters('storageAccountType')]",
             "ubuntuImage": {
                 "publisher": "Canonical",
@@ -368,7 +367,8 @@
                 "version": "latest"
             },
             "nicName": "[concat(variables('namingInfix'), '-nic')]",
-            "ipConfigName": "ipConfig"
+            "ipConfigName": "ipConfig",
+            "keyVaultName": "[concat(variables('namingInfix'),'-kvlt')]"
         }
     },
     "resources": [
@@ -446,5 +446,6 @@
                 }
             }
         }
+        
     ]
 }
