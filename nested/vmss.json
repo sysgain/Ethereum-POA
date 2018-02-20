@@ -75,7 +75,7 @@
                 "capacity": "[parameters('capacity')]"
             },
             "identity": { 
-                "type": "systemAssigned"
+                "type": "SystemAssigned"
             },
             "properties": {
                 "singlePlacementGroup": true,
