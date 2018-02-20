@@ -247,7 +247,6 @@
     },
     "variables": {
         "namingInfix": "[concat(parameters('namePrefix'),'rity')]",
-        
         "apis": {
             "apiVersionDeployments": "2016-02-01",
             "apiVersionNetworkSecurityGroups": "2017-06-01",
@@ -446,6 +445,5 @@
                 }
             }
         }
-        
     ]
 }
