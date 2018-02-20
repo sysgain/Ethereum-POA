@@ -369,7 +369,32 @@
             },
             "nicName": "[concat(variables('namingInfix'), '-nic')]",
             "ipConfigName": "ipConfig"
-        }
+        },
+        "dependsOnArray1": [
+            "vmss-deploy-reg1"
+        ],
+        "dependsOnArray2": [
+            "vmss-deploy-reg1",
+            "vmss-deploy-reg2"
+        ],
+        "dependsOnArray3": [
+            "vmss-deploy-reg1",
+            "vmss-deploy-reg2",
+            "vmss-deploy-reg3"
+        ],
+        "dependsOnArray4": [
+            "vmss-deploy-reg1",
+            "vmss-deploy-reg2",
+            "vmss-deploy-reg3",
+            "vmss-deploy-reg4"
+        ],
+        "dependsOnArray5": [
+            "vmss-deploy-reg1",
+            "vmss-deploy-reg2",
+            "vmss-deploy-reg3",
+            "vmss-deploy-reg4",
+            "vmss-deploy-reg5"
+        ]
     },
     "resources": [
         {
