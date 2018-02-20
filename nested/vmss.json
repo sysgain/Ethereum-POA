@@ -149,7 +149,7 @@
             "name": "[parameters('vmssSettings').keyVaultName]",
             "type": "Microsoft.KeyVault/vaults",
             "apiVersion": "2016-10-01",
-            "location": "string",
+            "location": "[parameters('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachineScaleSets/',variables('vmssName'),'-',parameters('suffix'))]"
             ],
