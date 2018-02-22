@@ -319,6 +319,9 @@
                     },
                     "apis": {
                         "value": "[variables('apis')]"
+                    },
+                    "trafficManagerSettings": {
+                        "value": "[variables('trafficManagerSettings')]"
                     }
                 }
             }
