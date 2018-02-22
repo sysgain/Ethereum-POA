@@ -131,91 +131,7 @@
                 "description": "The ResourceId of the Consortium Member VNet Gateawy to which to connect to"
             }
         },
-        "nodeCountRegion1": {
-            "type": "int",
-            "defaultValue": 1,
-            "metadata": {
-                "description": "Number of load balanced transaction nodes"
-            },
-            "allowedValues": [
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10
-            ],
-            "minValue": 1,
-            "maxValue": 10
-        },
-        "nodeCountRegion2": {
-            "type": "int",
-            "defaultValue": 1,
-            "metadata": {
-                "description": "Number of load balanced transaction nodes"
-            },
-            "allowedValues": [
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10
-            ],
-            "minValue": 1,
-            "maxValue": 10
-        },
-        "nodeCountRegion3": {
-            "type": "int",
-            "defaultValue": 1,
-            "metadata": {
-                "description": "Number of load balanced transaction nodes"
-            },
-            "allowedValues": [
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10
-            ],
-            "minValue": 1,
-            "maxValue": 10
-        },
-        "nodeCountRegion4": {
-            "type": "int",
-            "defaultValue": 1,
-            "metadata": {
-                "description": "Number of load balanced transaction nodes"
-            },
-            "allowedValues": [
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10
-            ],
-            "minValue": 1,
-            "maxValue": 10
-        },
-        "nodeCountRegion5": {
+        "nodeCountPerRegion": {
             "type": "int",
             "defaultValue": 1,
             "metadata": {
@@ -345,13 +261,7 @@
             "inboundNATRuleFrontendEndingPort": "3020",
             "inboundNATRuleBackendPort": "22"
         },
-        "capacityArray": [
-            "[parameters('nodeCountRegion1')]",
-            "[parameters('nodeCountRegion2')]",
-            "[parameters('nodeCountRegion3')]",
-            "[parameters('nodeCountRegion4')]",
-            "[parameters('nodeCountRegion5')]"
-        ],
+        
         "keyVaultName": "[concat(variables('namingInfix'),'-kvlt')]",
         "vmssSettings": {
             "authenticationType": "[parameters('authType')]",
@@ -369,32 +279,7 @@
             },
             "nicName": "[concat(variables('namingInfix'), '-nic')]",
             "ipConfigName": "ipConfig"
-        },
-        "dependsOnArray1": [
-            "vmss-deploy-reg1"
-        ],
-        "dependsOnArray2": [
-            "vmss-deploy-reg1",
-            "vmss-deploy-reg2"
-        ],
-        "dependsOnArray3": [
-            "vmss-deploy-reg1",
-            "vmss-deploy-reg2",
-            "vmss-deploy-reg3"
-        ],
-        "dependsOnArray4": [
-            "vmss-deploy-reg1",
-            "vmss-deploy-reg2",
-            "vmss-deploy-reg3",
-            "vmss-deploy-reg4"
-        ],
-        "dependsOnArray5": [
-            "vmss-deploy-reg1",
-            "vmss-deploy-reg2",
-            "vmss-deploy-reg3",
-            "vmss-deploy-reg4",
-            "vmss-deploy-reg5"
-        ]
+        }
     },
     "resources": [
         {
@@ -457,7 +342,7 @@
                         "value": "[variables('vnetSettings')[copyIndex()]]"
                     },
                     "capacity": {
-                        "value": "[variables('capacityArray')[copyIndex()]]"
+                        "value": "[parameters('nodeCountPerRegion')]"
                     },
                     "location": {
                         "value": "[variables('locationArray')[copyIndex()]]"
