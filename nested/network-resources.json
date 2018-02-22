@@ -19,6 +19,9 @@
         },
         "apis": {
             "type": "object"
+        },
+        "trafficManagerSettings": {
+            "type": "object"
         }
     },
     "variables": {
@@ -304,6 +307,41 @@
             },
             "properties": {
                 "publicIPAllocationMethod": "Dynamic"
+            }
+        },
+        {
+            "name": "[parameters('trafficManagerSettings').trafficManagerName]",
+            "type": "Microsoft.Network/trafficManagerProfiles",
+            "apiVersion": "[parameters('apis').apiVersionTrafficManager]",
+            "tags": {},
+            "location": "global",
+            "properties": {
+                "profileStatus": "Enabled",
+                "trafficRoutingMethod": "Weighted",
+                "dnsConfig": {
+                    "relativeName": "[parameters('trafficManagerSettings').dnsRelativeName]",
+                    "ttl": "[parameters('trafficManagerSettings').dnsTtl]"
+                },
+                "monitorConfig": {
+                    "protocol": "[parameters('trafficManagerSettings').monitorProtocol]",
+                    "port": "[parameters('trafficManagerSettings').monitorPort]",
+                    "path": "[parameters('trafficManagerSettings').monitorPath]"
+                },
+                "copy": [
+                    {
+                        "name": "endpoints",
+                        "count": "[parameters('regionCount')]",
+                        "input": {
+                            "name": "[concat(parameters('trafficManagerSettings').endpointNamePrefix, '-', parameters('suffixArray')[copyIndex('endpoints')]) ]",
+                            "type": "Microsoft.Network/trafficManagerProfiles/azureEndpoints",
+                            "properties": {
+                                "targetResourceId": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('lbPublicIPAddressName'),'-',parameters('suffixArray')[copyIndex('endpoints')]))]",
+                                "endpointStatus": "Enabled",
+                                "weight": 1
+                            }
+                        }
+                    }
+                ]
             }
         }
     ]

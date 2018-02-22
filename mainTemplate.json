@@ -163,7 +163,17 @@
     },
     "variables": {
         "namingInfix": "[concat(parameters('namePrefix'),'rity')]",
+        "trafficManagerSettings": {
+            "trafficManagerName": "[concat(variables('namingInfix'),'-traffMgr')]",
+            "dnsRelativeName": "[concat(variables('namingInfix'), '-traf-',variables('uniq'))]",
+            "dnsTtl": 60,
+            "monitorProtocol": "TCP",
+            "monitorPort": 80,
+            "monitorPath": "/",
+            "endpointNamePrefix": "[concat(variables('namingInfix'), '-lb-pip')]"
+        },
         "apis": {
+            "apiVersionTrafficManager": "2017-05-01",
             "apiVersionDeployments": "2016-02-01",
             "apiVersionNetworkSecurityGroups": "2017-06-01",
             "apiVersionPublicIPAddresses": "2017-06-01",
@@ -261,7 +271,6 @@
             "inboundNATRuleFrontendEndingPort": "3020",
             "inboundNATRuleBackendPort": "22"
         },
-        
         "keyVaultName": "[concat(variables('namingInfix'),'-kvlt')]",
         "vmssSettings": {
             "authenticationType": "[parameters('authType')]",
