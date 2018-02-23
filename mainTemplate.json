@@ -259,6 +259,7 @@
             "dnsHostName": "[concat(variables('namingInfix'), '-dns-',variables('uniq'))]",
             "lbFrontEndIpConfigName": "LBFrontEnd",
             "backendAddressPoolName": "LBBackendPool",
+            "nodeCountPerRegion": "[parameters('nodeCountPerRegion')]",
             "loadBalancerName": "[concat(variables('namingInfix'), '-lb')]",
             "FrontendPort1": "854",
             "BackendPort1": "854",
