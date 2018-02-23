@@ -166,7 +166,7 @@
         "trafficManagerSettings": {
             "trafficManagerName": "[concat(variables('namingInfix'),'-traffMgr')]",
             "dnsRelativeName": "[concat(variables('namingInfix'), '-traf-',variables('uniq'))]",
-            "dnsTtl": 60,
+            "dnsTtl": 30,
             "monitorProtocol": "HTTP",
             "monitorPort": 80,
             "monitorPath": "/",
