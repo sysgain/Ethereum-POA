@@ -247,7 +247,7 @@
                             "backendPort": "[variables('BackendPort3')]",
                             "idleTimeoutInMinutes": 5,
                             "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', concat(variables('loadBalancerName'),'-',parameters('suffixArray')[copyIndex()])),'/probes/lbProbe2')]"
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', concat(variables('loadBalancerName'),'-',parameters('suffixArray')[copyIndex()])),'/probes/lbProbe3')]"
                             }
                         }
                     }
